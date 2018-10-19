@@ -1,3 +1,4 @@
+// fetch from API then turn into json 
 fetch('https://randomuser.me/api/?nat=us&results=12')
   .then(response => response.json())
   .then(data => generateGallery(data.results))
@@ -7,7 +8,9 @@ const gallery = document.querySelector('#gallery');
 const modalgroup = document.querySelector('#modalgroup')
 const searchContainer = document.querySelector('.search-container')
 
+// constructe the whole gallery and modal
 function generateGallery (data) {
+  //map through the data.results and make every card with an id 
   const profiles = data.map((item,i) => `
     <div class="card" id="${i}">
         <div class="card-img-container">
@@ -20,7 +23,7 @@ function generateGallery (data) {
         </div>
     </div>
   `).join('');
-
+  // set an id for every modal
   const modals = data.map((item,i) => `
     <div class="modal-container" id="${i}">
         <div class="modal">
@@ -42,12 +45,14 @@ function generateGallery (data) {
     </div>
   `).join('')
 
+  //insert the search bar and button
   const search = `
   <form action="#" method="get">
       <input type="search" id="search-input" class="search-input" placeholder="Search...">
       <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
   </form>
   `
+  //put these three item into html
   gallery.innerHTML = profiles;
   modalgroup.innerHTML = modals;
   searchContainer.innerHTML = search;
@@ -60,25 +65,28 @@ function generateGallery (data) {
   const searchInput = document.querySelector("#search-input")
   const searchBtn = document.querySelector("#search-submit")
 
-
   searchBtn.addEventListener('click', function(e){
     e.preventDefault();
+    //compare the lowercase of input and the card name text
     card.forEach(function(item){
-      let name = item.children[1].children[0].innerText;
-      if(name.includes(searchInput.value)) {
+      let name = item.children[1].children[0].innerText.toLowerCase();
+      if(name.includes(searchInput.value.toLowerCase())) {
         item.style.display = 'block'
       } else {
         item.style.display = 'none'
       }
     })
+    //12 hidden madol + 12 hidden card = 24, which means 12 cards will be hidden if
+    //there is no result
     x = document.querySelectorAll('[style="display: none;"]')
     if (x.length === 24) {
       alert('no result');
     }
  })
-
+  //hide all modals 
   singleModal.forEach(e => e.style.display = "none")
-
+  // when a card is clicked, hide the card and show the modal
+  // show the modal if the modal id is the same as the clicked card id
   card.forEach(function(item){
     item.addEventListener('click', function() {
       singleModal[this.id].style.display = 'block'
@@ -90,7 +98,7 @@ function generateGallery (data) {
       singleModal.forEach(e => e.style.display = "none")
     })
   })
-
+  //if the id of modal equals to or lower than 0, only show the first modal
   prevBtn.forEach(function(item){
     item.addEventListener('click', function(){
       let i = parseInt(this.id);
@@ -102,7 +110,7 @@ function generateGallery (data) {
       }
     })
   })
-
+  //if the id is less than 11, show the next modal, otherwise show the modal with the id "11"
   nextBtn.forEach(function(item){
     item.addEventListener('click', function(){
       let i = parseInt(this.id);
